@@ -42,7 +42,7 @@ public OnPluginStart()
     sm_ruma_kickmsg = CreateConVar("sm_ruma_kickmsg", "1", "Displays the hour limit on the kick message.\n0 = Off\n1 = On", _, true, 0.0, true, 1.0)
     sm_ruma_log_level = CreateConVar("sm_ruma_log_level", "1", "Level of logging\n0 = Errors only\n1 = Info + errors\n2 = Info, errors, and debug", _, true, 0.0, true, 2.0);
 
-    AutoExecConfig(true, "plugin.ruma")
+    AutoExecConfig(true, "plugin.tf2ruma")
 
     // Admin command
     RegAdminCmd("sm_ruma_addplayer", Command_AddPlayer, ADMFLAG_RCON, "Add player to the DB so he or she can play even with 0 hours of playtime.")
