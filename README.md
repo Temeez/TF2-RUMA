@@ -6,8 +6,8 @@ TF2 RUMA 'Remove Unnecessarily Most Antagonists', is a plugin for Team Fortress 
  - [SteamTools](https://builds.limetech.org/?p=steamtools) 0.9.1 or higher
  - [Steam API Key](http://steamcommunity.com/dev/apikey)
 
-This plugin uses SQLite to save the accepted users. Make sure that the following code snipped exitst in the following file: 
-```\addons\sourcemod\configs\databases.cfg```
+This plugin uses SQLite to save the accepted users. Make sure that the following code snipped exitst in the following file: `\addons\sourcemod\configs\databases.cfg`
+
 ```
 "storage-local"
 {
