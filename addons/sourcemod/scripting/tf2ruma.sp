@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <steamtools>
 
-#define PLUGIN_VERSION "1.0.0"
+#define PLUGIN_VERSION "1.0.1"
 
 enum LogLevel {
     Log_Error = 0,
@@ -176,6 +176,11 @@ public Action:Command_AddPlayer(client, args)
 */
 public bool:OnClientConnect(int client, char[] rejectmsg, int maxlen)
 {
+    if (IsClientConnected(client) && IsFakeClient(client)) {
+        LogItem(Log_Debug, "Bot %L was ignored", client)
+        return true
+    }
+
     // Do nothing if the api key is not set
     // except allow the client to connect
     if (!ruma_steamapikeyset) return true
@@ -258,20 +263,6 @@ public OnDownloadComplete(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful,
 
 
 /*
-    Called when a client receives an auth ID. The state of a client's authorization as an admin is not guaranteed here.
-    Part of the method B
-*/
-public OnClientAuthorized(client, const String:auth[])
-{
-    if (IsFakeClient(client)) {
-        KickClient(client, "You haven't accumulated enough souls to access this server")
-
-        LogItem(Log_Info, "(Fake Client): client %L was kicked for having no soul.", client)
-    }
-}
-
-
-/*
     The server receives the player game stats
     Part of the method B
 */
@@ -321,6 +312,7 @@ int GetGameTotalPlaytime(String:dataBuffer[], String:gameid[], maxlength, int cl
     // This usually means the response is empty
     if (!KvGotoFirstSubKey(kv)) {
         Steam_RequestStats(client)
+
         return 999999
     }
 
