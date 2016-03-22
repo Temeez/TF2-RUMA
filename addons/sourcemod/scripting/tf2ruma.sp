@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <SteamWorks>
 
-#define PLUGIN_VERSION "1.1.0"
+#define PLUGIN_VERSION "1.1.1"
 
 enum LogLevel {
     Log_Error = 0,
@@ -277,15 +277,6 @@ public bool:OnClientConnect(int client, char[] rejectmsg, int maxlen)
     // Steam_GetCSteamIDForClient(client, steamcid, sizeof(steamcid))
     LogItem(Log_Debug, "%s is connecting as %L", steamcid, client)
 
-    // Http request
-    // g_HTTPRequest = Steam_CreateHTTPRequest(HTTPMethod_GET, "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001")
-    // Steam_SetHTTPRequestGetOrPostParameter(g_HTTPRequest, "format", "vdf")
-    // Steam_SetHTTPRequestGetOrPostParameter(g_HTTPRequest, "steamid", steamcid)
-    // Steam_SetHTTPRequestGetOrPostParameter(g_HTTPRequest, "key", ruma_steamApiKey)
-    // Steam_SetHTTPRequestGetOrPostParameter(g_HTTPRequest, "include_played_free_games", "1")
-    // Steam_SetHTTPRequestGetOrPostParameter(g_HTTPRequest, "appids_filter[0]", "440")
-    // Steam_SendHTTPRequest(g_HTTPRequest, OnDownloadComplete, GetClientUserId(client))
-
     return true
 }
 
@@ -355,7 +346,7 @@ public SendHTTPRequest(String:steamcid[32], int client) {
     bool setnetwork = SteamWorks_SetHTTPRequestNetworkActivityTimeout(HTTPRequest, 10)
     // Set required parameters
     bool setparam = SteamWorks_SetHTTPRequestGetOrPostParameter(HTTPRequest, "format", "vdf")
-    bool setsteamid = SteamWorks_SetHTTPRequestGetOrPostParameter(HTTPRequest, "steamid", "76561198025099703")
+    bool setsteamid = SteamWorks_SetHTTPRequestGetOrPostParameter(HTTPRequest, "steamid", steamcid)
     bool setkey = SteamWorks_SetHTTPRequestGetOrPostParameter(HTTPRequest, "key", ruma_steamApiKey)
     bool setparam1 = SteamWorks_SetHTTPRequestGetOrPostParameter(HTTPRequest, "include_played_free_games", "1")
     bool setparam2 = SteamWorks_SetHTTPRequestGetOrPostParameter(HTTPRequest, "appids_filter[0]", "440")
