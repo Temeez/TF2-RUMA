@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <SteamWorks>
 
-#define PLUGIN_VERSION "1.1.1"
+#define PLUGIN_VERSION "1.1.2"
 
 enum LogLevel {
     Log_Error = 0,
@@ -459,7 +459,7 @@ public GetHTTPRequest(Handle:hRequest, bool:bFailure, bool:bRequestSuccessful, E
     // Do nothing if player has 999999 as playtime
     // This usually mean that something went wrong
     // Reason for this can be anything from steam server to the client
-    if (playerTotalPlaytime != 999999 || playerTotalPlaytime != -1) {
+    if (playerTotalPlaytime != 999999 && playerTotalPlaytime != -1) {
         // Kick the player if the total playtime is too low
         if (playerTotalPlaytime < ruma_time) {
             // Kick the client
