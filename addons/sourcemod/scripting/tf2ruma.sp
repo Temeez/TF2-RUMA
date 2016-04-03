@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <SteamWorks>
 
-#define PLUGIN_VERSION "1.1.2"
+#define PLUGIN_VERSION "1.1.3"
 
 enum LogLevel {
     Log_Error = 0,
@@ -22,7 +22,7 @@ static String:log_path[PLATFORM_MAX_PATH]
 static String:whitelist_path[PLATFORM_MAX_PATH]
 
 static String:ruma_steamApiKey[64]
-static String:ruma_kickmsg[160]
+static String:ruma_kickmsg[256]
 static int ruma_time
 static int ruma_strict
 static bool:ruma_steamapikeyset
@@ -32,6 +32,7 @@ new Handle:sm_ruma_time = INVALID_HANDLE
 new Handle:sm_ruma_strict_mode = INVALID_HANDLE
 new Handle:sm_ruma_kickmsg = INVALID_HANDLE
 new Handle:sm_ruma_log_level
+new Handle:sm_ruma_kick_msg_text = INVALID_HANDLE
 
 new Handle:whitelist_cache = INVALID_HANDLE
 
@@ -46,6 +47,7 @@ public OnPluginStart()
     sm_ruma_strict_mode = CreateConVar("sm_ruma_strict_mode", "1", "Strict mode\n0 = Off only\n1 = Kick player if couldn't get playtime on some cases\n2 = Kick player if couldn't get the playtime (private profile, Steam api down, etc)", _, true, 0.0, true, 2.0)
     sm_ruma_kickmsg = CreateConVar("sm_ruma_kickmsg", "1", "Displays the hour limit on the kick message.\n0 = Off\n1 = On", _, true, 0.0, true, 1.0)
     sm_ruma_log_level = CreateConVar("sm_ruma_log_level", "1", "Level of logging\n0 = Errors only\n1 = Info + errors\n2 = Info, errors, and debug", _, true, 0.0, true, 2.0)
+    sm_ruma_kick_msg_text = CreateConVar("sm_ruma_kick_msg_text", "", "Custom reject message for the kicked player, max length of this message is 256!", _, false)
 
     AutoExecConfig(true, "plugin.tf2ruma")
 
@@ -77,13 +79,17 @@ public OnConfigsExecuted()
 
     LogItem(Log_Debug, "Strict mode set to: %i", ruma_strict)
 
+    GetConVarString(sm_ruma_kick_msg_text, ruma_kickmsg, sizeof(ruma_kickmsg))
+
     // Format the kick messages for later use
-    if (GetConVarInt(sm_ruma_kickmsg) && ruma_strict < 2) {
-        Format(ruma_kickmsg, sizeof(ruma_kickmsg), "You haven't accumulated enough playtime to access this server. %i hours required.", ruma_time)
-    } else if (ruma_strict == 2) {
-        Format(ruma_kickmsg, sizeof(ruma_kickmsg), "You probably haven't accumulated enough playtime to access this server. Profile private?", ruma_time)
-    } else {
-        Format(ruma_kickmsg, sizeof(ruma_kickmsg), "You haven't accumulated enough playtime to access this server")
+    if (StrEqual(ruma_kickmsg, "")) {
+        if (GetConVarInt(sm_ruma_kickmsg) && ruma_strict < 2) {
+            Format(ruma_kickmsg, sizeof(ruma_kickmsg), "You haven't accumulated enough playtime to access this server. %i hours required.", ruma_time)
+        } else if (ruma_strict == 2) {
+            Format(ruma_kickmsg, sizeof(ruma_kickmsg), "You probably haven't accumulated enough playtime to access this server. Profile private?", ruma_time)
+        } else {
+            Format(ruma_kickmsg, sizeof(ruma_kickmsg), "You haven't accumulated enough playtime to access this server")
+        }
     }
 
     // Check if the Steam API key has been changed from the default

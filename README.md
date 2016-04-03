@@ -13,6 +13,7 @@ TF2 RUMA 'Remove Unnecessarily Most Antagonists', is a plugin for Team Fortress 
 - sm_ruma_log_level - Logging for the plugin. [ 1 - 0/2]
 - sm_ruma_hour_limit - The amount of hours required to join the server. [ 10 - 0/inf. ]
 - sm_ruma_strict_mode - Kick player depending on the strict mode and playtime. [ 1 - 0/2 ]
+- sm_ruma_kick_msg_text - Custom reject message for the kicked player, max length of this message is 256!
 
 ## Admin Command
 - sm_ruma_addplayer - Allows admins  to add a player into the DB, so they can join the server even if they don't meet the required playtime limit.
